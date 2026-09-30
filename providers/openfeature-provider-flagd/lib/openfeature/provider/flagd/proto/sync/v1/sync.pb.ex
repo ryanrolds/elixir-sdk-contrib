@@ -4,7 +4,7 @@ defmodule Flagd.Sync.V1.SyncFlagsRequest do
   use Protobuf, protoc_gen_elixir_version: "0.14.1", syntax: :proto3
 
   field(:provider_id, 1, type: :string, json_name: "providerId")
-  field(:selector, 2, type: :string)
+  field(:selector, 2, type: :string, deprecated: true)
 end
 
 defmodule Flagd.Sync.V1.SyncFlagsResponse do
@@ -13,6 +13,12 @@ defmodule Flagd.Sync.V1.SyncFlagsResponse do
   use Protobuf, protoc_gen_elixir_version: "0.14.1", syntax: :proto3
 
   field(:flag_configuration, 1, type: :string, json_name: "flagConfiguration")
+
+  field(:sync_context, 2,
+    proto3_optional: true,
+    type: Google.Protobuf.Struct,
+    json_name: "syncContext"
+  )
 end
 
 defmodule Flagd.Sync.V1.FetchAllFlagsRequest do
@@ -21,7 +27,7 @@ defmodule Flagd.Sync.V1.FetchAllFlagsRequest do
   use Protobuf, protoc_gen_elixir_version: "0.14.1", syntax: :proto3
 
   field(:provider_id, 1, type: :string, json_name: "providerId")
-  field(:selector, 2, type: :string)
+  field(:selector, 2, type: :string, deprecated: true)
 end
 
 defmodule Flagd.Sync.V1.FetchAllFlagsResponse do
@@ -35,13 +41,13 @@ end
 defmodule Flagd.Sync.V1.GetMetadataRequest do
   @moduledoc false
 
-  use Protobuf, protoc_gen_elixir_version: "0.14.1", syntax: :proto3
+  use Protobuf, deprecated: true, protoc_gen_elixir_version: "0.14.1", syntax: :proto3
 end
 
 defmodule Flagd.Sync.V1.GetMetadataResponse do
   @moduledoc false
 
-  use Protobuf, protoc_gen_elixir_version: "0.14.1", syntax: :proto3
+  use Protobuf, deprecated: true, protoc_gen_elixir_version: "0.14.1", syntax: :proto3
 
   field(:metadata, 2, type: Google.Protobuf.Struct)
 end

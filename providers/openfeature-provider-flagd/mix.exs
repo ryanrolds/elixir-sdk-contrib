@@ -28,7 +28,8 @@ defmodule OpenFeature.Provider.Flagd.MixProject do
 
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {OpenFeature.Provider.Flagd.Application, []}
     ]
   end
 
@@ -38,6 +39,7 @@ defmodule OpenFeature.Provider.Flagd.MixProject do
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.38", only: :docs, runtime: false},
       {:grpc, "~> 0.10.0"},
+      {:jason, "~> 1.4"},
       {:open_feature, "~> 0.1"},
       {:mimic, "~> 2.0", only: :test, runtime: false},
       {:req, "~> 0.5"}

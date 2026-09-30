@@ -13,6 +13,7 @@ defmodule OpenFeature.Provider.Flagd.GRPC do
   alias Flagd.Evaluation.V1, as: Eval
   alias Google.Protobuf.Struct
   alias OpenFeature.Provider.Flagd.Reason
+  alias OpenFeature.Provider.Flagd.TLS
   alias OpenFeature.ResolutionDetails
   alias Protobuf.JSON.Decode
   alias Protobuf.JSON.Encode
@@ -87,7 +88,7 @@ defmodule OpenFeature.Provider.Flagd.GRPC do
           {:ok, t()} | {:error, :provider_not_ready}
   def initialize(provider, domain, _context) do
     target = "#{provider.host}:#{provider.port}"
-    opts = grpc_connection_opts(provider)
+    opts = TLS.connection_opts(provider)
 
     case GRPC.Stub.connect(target, opts) do
       {:ok, channel} ->
@@ -171,34 +172,6 @@ defmodule OpenFeature.Provider.Flagd.GRPC do
       {:error, _} -> {:error, :flag_not_found}
     end
   end
-
-  defp grpc_connection_opts(%__MODULE__{tls: true, cacerts: cacerts})
-       when not is_nil(cacerts) do
-    [cred: GRPC.Credential.new(ssl: [cacerts: cacerts])]
-  end
-
-  defp grpc_connection_opts(%__MODULE__{tls: true, cacertfile: cacertfile})
-       when is_binary(cacertfile) do
-    [cred: GRPC.Credential.new(ssl: [cacertfile: cacertfile])]
-  end
-
-  defp grpc_connection_opts(%__MODULE__{tls: true}) do
-    # Try to use system certificate store if available (OTP 25+)
-
-    if function_exported?(:public_key, :cacerts_get, 0) do
-      cacerts = :public_key.cacerts_get()
-      [cred: GRPC.Credential.new(ssl: [cacerts: cacerts])]
-    else
-      Logger.info("System CA certificate store unavailable (requires OTP 25+)")
-      [cred: GRPC.Credential.new(ssl: true)]
-    end
-  rescue
-    _ ->
-      Logger.warning("Could not load system CA certificates, using default SSL configuration")
-      [cred: GRPC.Credential.new(ssl: true)]
-  end
-
-  defp grpc_connection_opts(_provider), do: []
 
   defp to_result(res) do
     %ResolutionDetails{

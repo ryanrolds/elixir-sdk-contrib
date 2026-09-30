@@ -8,6 +8,7 @@ Mimic.copy(Req.Request)
 Mimic.copy(GRPC.Stub)
 Mimic.copy(GRPC.Credential)
 Mimic.copy(Flagd.Evaluation.V1.Service.Stub)
+Mimic.copy(Flagd.Sync.V1.FlagSyncService.Stub)
 Mimic.copy(OpenFeature.EventEmitter)
 Mimic.copy(Protobuf.JSON.Encode)
 
